@@ -214,14 +214,14 @@ void Context::activate()
 
                         int computeMode = 9999;
 #if defined(CUDA_VERSION) && (CUDA_VERSION >= 13000)
-                        CU_SAFE_CALL( cuDeviceGetAttribute(&cm, CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, device) );
+                        CU_SAFE_CALL( cuDeviceGetAttribute(&computeMode, CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, device) );
 #else
                         // CUDA <= 12.x: keep old runtime field
                         computeMode = data_ref_->cuda_device_prop.computeMode;
 #endif
 
                         bool computeModeIsProhibited = (computeMode == cudaComputeModeProhibited);
-                        bool computeModeIsExclusive = (computeMode == cudaComputeModeProhibited);
+                        bool computeModeIsExclusive = (computeMode == cudaComputeModeExclusive);
 
 			// Note that cuCtxCreate(...) returns CUDA_ERROR_UNKNOWN if the compute mode of the device is CU_COMPUTEMODE_PROHIBITED
 			// See https://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__CTX.html#group__CUDA__CTX_1g65dc0012348bc84810e2103a40d8e2cf
