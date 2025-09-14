@@ -212,13 +212,24 @@ void Context::activate()
 			CUdevice device = 0;
 			CU_SAFE_CALL( cuDeviceGet(&device, data_ref_->cuda_device) );
 
+                        int computeMode = 9999;
+#if defined(CUDA_VERSION) && (CUDA_VERSION >= 13000)
+                        CU_SAFE_CALL( cuDeviceGetAttribute(&cm, CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, device) );
+#else
+                        // CUDA <= 12.x: keep old runtime field
+                        computeMode = data_ref_->cuda_device_prop.computeMode;
+#endif
+
+                        bool computeModeIsProhibited = (computeMode == cudaComputeModeProhibited);
+                        bool computeModeIsExclusive = (computeMode == cudaComputeModeProhibited);
+
 			// Note that cuCtxCreate(...) returns CUDA_ERROR_UNKNOWN if the compute mode of the device is CU_COMPUTEMODE_PROHIBITED
 			// See https://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__CTX.html#group__CUDA__CTX_1g65dc0012348bc84810e2103a40d8e2cf
-			if (data_ref_->cuda_device_prop.computeMode == cudaComputeModeProhibited) {
+			if (computeModeIsProhibited) {
 				throw cuda::cuda_exception("GPU device " + std::string(data_ref_->cuda_device_prop.name) + " in ComputeMode=PROHIBITED which is not supported, please use nvidia-smi to change compute mode and restart Metashape");
 			}
 			// Note that cuCtxCreate(...) returns CUDA_ERROR_INVALID_DEVICE or CUDA_ERROR_UNKNOWN if the device is CU_COMPUTEMODE_EXCLUSIVE
-			if (data_ref_->cuda_device_prop.computeMode == cudaComputeModeExclusive) {
+			if (computeModeIsExclusive) {
 				throw cuda::cuda_exception("GPU device " + std::string(data_ref_->cuda_device_prop.name) + " in ComputeMode=EXCLUSIVE which is not supported, please use nvidia-smi to change compute mode and restart Metashape");
 			}
 
