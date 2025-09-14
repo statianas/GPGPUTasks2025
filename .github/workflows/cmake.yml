@@ -19,18 +19,38 @@ jobs:
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 90
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 90
 
-    - name: Install OpenCL driver for CPU
-      run: sudo bash .github/scripts/install_intel_opencl.sh;
+    - name: Install OpenCL CPU driver
+      run: sudo bash scripts/linux/install_opencl_cpu_driver.sh;
+
+    - name: Install Vulkan CPU driver
+      run: sudo bash scripts/linux/install_vulkan_cpu_driver.sh;
 
     - name: Show clinfo full output
       run: clinfo
 
+    - name: Install CUDA SDK
+      run: sudo bash scripts/linux/install_cuda_sdk.sh;
+
+    - name: Install Vulkan SDK
+      run: sudo bash scripts/linux/install_vulkan_sdk.sh --no-validation-layers; # we don't compile validation layers on each CI run because it is too slow
+
+    - name: Install dependencies (gtest and graphicsmagick)
+      run: sudo bash scripts/linux/install_dependencies.sh;
+
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DGPU_CUDA_SUPPORT=ON
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --parallel $(nproc)
 
-    - name: Run enumDevices
+    - name: Run libs/gpu unit-tests
       working-directory: ${{github.workspace}}/build
-      run: ./enumDevices
+      run: ./libs/gpu/libgpu_test
+
+    - name: Run main_aplusb
+      working-directory: ${{github.workspace}}/build
+      run: ./main_aplusb
+
+    - name: Run main_aplusb_matrix
+      working-directory: ${{github.workspace}}/build
+      run: ./main_aplusb_matrix
