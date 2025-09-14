@@ -223,7 +223,7 @@ void Context::activate()
 			}
 
 			CUresult err;
-			CUDA_TRACE(err = cuCtxCreate(&data_ref_->cuda_context, 0, device));
+			CUDA_TRACE(err = cuCtxCreate_v2(&data_ref_->cuda_context, 0, device));
 			cuda::reportErrorCU(err, __LINE__, "cuCtxCreate failed: ");
 #else
 			CUDA_SAFE_CALL( cudaSetDevice(data_ref_->cuda_device) );
