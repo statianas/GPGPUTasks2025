@@ -223,7 +223,16 @@ void Context::activate()
 			}
 
 			CUresult err;
-			CUDA_TRACE(err = cuCtxCreate_v2(&data_ref_->cuda_context, 0, device));
+
+#if defined(CUDA_VERSION) && (CUDA_VERSION >= 13000)
+                        // CUDA 13+: new signature with CUctxCreateParams
+                        CUctxCreateParams params{};
+                        CUDA_TRACE(err = cuCtxCreate(&data_ref_->cuda_context, &params, 0, device));
+#else
+                        // CUDA 12.x and older
+                        CUDA_TRACE(err = cuCtxCreate(&data_ref_->cuda_context, 0, device));
+#endif
+
 			cuda::reportErrorCU(err, __LINE__, "cuCtxCreate failed: ");
 #else
 			CUDA_SAFE_CALL( cudaSetDevice(data_ref_->cuda_device) );
