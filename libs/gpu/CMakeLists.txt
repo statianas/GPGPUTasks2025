@@ -212,7 +212,7 @@ if (GPU_CUDA_SUPPORT)
 
     set(HEADERS ${HEADERS} ${CUDA_HEADERS})
     set(SOURCES ${SOURCES} ${CUDA_SOURCES})
-    set(LIBRARIES ${LIBRARIES} ${CUDA_LIBRARIES})
+    set(LIBRARIES ${LIBRARIES} CUDA::cuda_driver CUDA::cudart)
 
     add_definitions(-DCUDA_SUPPORT)
     add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
