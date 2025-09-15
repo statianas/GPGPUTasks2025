@@ -1,6 +1,7 @@
 #ifdef CUDA_SUPPORT
 #include "libbase/timer.h"
 #include <cuda_runtime.h>
+#include <cuda_runtime_api.h>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -103,7 +104,7 @@ bool CUDAEnum::enumDevices(bool silent)
 		Device device;
 
                 int sm_clock_khz = 9999;
-#if defined(CUDA_VERSION) && (CUDA_VERSION >= 13000)
+#if defined(CUDART_VERSION) && (CUDART_VERSION >= 13000)
                 // CUDA 13+: runtime property removed -> query attribute (returns kHz)
                 CUDA_SAFE_CALL( cudaDeviceGetAttribute(&sm_clock_khz, cudaDevAttrClockRate, device_index) );
 #else
