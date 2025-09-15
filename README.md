@@ -31,9 +31,13 @@
 5. ``mkdir build``
 6. ``cd build``
 7. Здесь возможны варианты:
+ 
 7.1. **Linux** - ```cmake -DGPU_CUDA_SUPPORT=ON .. ``` (или без ```-DGPU_CUDA_SUPPORT=ON```)
+
 7.2. **Windows** - укажите в CLion->File->Settings->Build->CMake->CMake options: ```-DCMAKE_TOOLCHAIN_FILE=C:\Users\<USERNAME>\.vcpkg-clion\vcpkg\scripts\buildsystems\vcpkg.cmake -DSPIR_CLANG_BIN="C:\Program Files\LLVM\bin\clang.exe" -DGPU_CUDA_SUPPORT=ON``` (или без ```-DGPU_CUDA_SUPPORT=ON```)
+
 7.3. **macOS** - вероятно что-то очень похожее на Linux, напишите если будут трудности
+
 8. ``cmake ..``
 9. ``make -j8``
 10. ``./libs/gpu/libgpu_test`` прогонит unit-test-ы покрывающие OpenCL и Vulkan
