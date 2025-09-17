@@ -2,7 +2,7 @@
 
 2) Install Vulkan SDK:
 2.1) Into directory /opt/vulkansdk
-2.2) Enable "System Global Installation"
+2.2) Enable "System Global Installation" and make sure to tick "Vulkan Memory Allocator header" - see screen /.figures/vulkan_sdk_installer_macos.png
 
 3) Ensure that everything works:
 $ vulkaninfo --summary
