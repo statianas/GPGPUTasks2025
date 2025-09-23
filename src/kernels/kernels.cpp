@@ -1,12 +1,16 @@
 #include "kernels.h"
 
 #include "cl/generated_kernels/aplusb.h"
-#include "cl/generated_kernels/aplusb_matrix_bad.h"
-#include "cl/generated_kernels/aplusb_matrix_good.h"
+#include "cl/generated_kernels/sum_01_atomics.h"
+#include "cl/generated_kernels/sum_02_atomics_load_k.h"
+#include "cl/generated_kernels/sum_03_local_memory_atomic_per_workgroup.h"
+#include "cl/generated_kernels/sum_04_local_reduction.h"
 
 #include "vk/generated_kernels/aplusb_comp.h"
-#include "vk/generated_kernels/aplusb_matrix_bad_comp.h"
-#include "vk/generated_kernels/aplusb_matrix_good_comp.h"
+#include "vk/generated_kernels/sum_01_atomics_comp.h"
+#include "vk/generated_kernels/sum_02_atomics_load_k_comp.h"
+#include "vk/generated_kernels/sum_03_local_memory_atomic_per_workgroup_comp.h"
+#include "vk/generated_kernels/sum_04_local_reduction_comp.h"
 
 #ifndef CUDA_SUPPORT
 namespace cuda {
@@ -16,17 +20,29 @@ void aplusb(const gpu::WorkSize& workSize,
     // dummy implementation if CUDA_SUPPORT is disabled
     rassert(false, 54623523412413);
 }
-void aplusb_matrix_bad(const gpu::WorkSize& workSize,
-    const gpu::gpu_mem_32u& a, const gpu::gpu_mem_32u& b, gpu::gpu_mem_32u& c, unsigned int n)
+void sum_01_atomics(const gpu::WorkSize& workSize,
+    const gpu::gpu_mem_32u& a, gpu::gpu_mem_32u& sum, unsigned int n)
 {
     // dummy implementation if CUDA_SUPPORT is disabled
-    rassert(false, 54623523412414);
+    rassert(false, 546237686412414);
 }
-void aplusb_matrix_good(const gpu::WorkSize& workSize,
-    const gpu::gpu_mem_32u& a, const gpu::gpu_mem_32u& b, gpu::gpu_mem_32u& c, unsigned int n)
+void sum_02_atomics_load_k(const gpu::WorkSize& workSize,
+    const gpu::gpu_mem_32u& a, gpu::gpu_mem_32u& sum, unsigned int n)
 {
     // dummy implementation if CUDA_SUPPORT is disabled
-    rassert(false, 54623523412415);
+    rassert(false, 545764523412414);
+}
+void sum_03_local_memory_atomic_per_workgroup(const gpu::WorkSize& workSize,
+    const gpu::gpu_mem_32u& a, gpu::gpu_mem_32u& sum, unsigned int n)
+{
+    // dummy implementation if CUDA_SUPPORT is disabled
+    rassert(false, 7657564523412414);
+}
+void sum_04_local_reduction(const gpu::WorkSize& workSize,
+    const gpu::gpu_mem_32u& a, gpu::gpu_mem_32u& sum, unsigned int n)
+{
+    // dummy implementation if CUDA_SUPPORT is disabled
+    rassert(false, 7657564523412414);
 }
 } // namespace cuda
 #endif
@@ -36,13 +52,21 @@ const ocl::ProgramBinaries& getAplusB()
 {
     return opencl_binaries_aplusb;
 }
-const ocl::ProgramBinaries& getAplusBMatrixBad()
+const ProgramBinaries& getSum01Atomics()
 {
-    return opencl_binaries_aplusb_matrix_bad;
+    return opencl_binaries_sum_01_atomics;
 }
-const ocl::ProgramBinaries& getAplusBMatrixGood()
+const ProgramBinaries& getSum02AtomicsLoadK()
 {
-    return opencl_binaries_aplusb_matrix_good;
+    return opencl_binaries_sum_02_atomics_load_k;
+}
+const ProgramBinaries& getSum03LocalMemoryAtomicPerWorkgroup()
+{
+    return opencl_binaries_sum_03_local_memory_atomic_per_workgroup;
+}
+const ProgramBinaries& getSum04LocalReduction()
+{
+    return opencl_binaries_sum_04_local_reduction;
 }
 } // namespace ocl
 
@@ -51,12 +75,20 @@ const ProgramBinaries& getAplusB()
 {
     return vulkan_binaries_aplusb_comp;
 }
-const ProgramBinaries& getAplusBMatrixBad()
+const ProgramBinaries& getSum01Atomics()
 {
-    return vulkan_binaries_aplusb_matrix_bad_comp;
+    return vulkan_binaries_sum_01_atomics_comp;
 }
-const ProgramBinaries& getAplusBMatrixGood()
+const ProgramBinaries& getSum02AtomicsLoadK()
 {
-    return vulkan_binaries_aplusb_matrix_good_comp;
+    return vulkan_binaries_sum_02_atomics_load_k_comp;
+}
+const ProgramBinaries& getSum03LocalMemoryAtomicPerWorkgroup()
+{
+    return vulkan_binaries_sum_03_local_memory_atomic_per_workgroup_comp;
+}
+const ProgramBinaries& getSum04LocalReduction()
+{
+    return vulkan_binaries_sum_04_local_reduction_comp;
 }
 } // namespace avk2

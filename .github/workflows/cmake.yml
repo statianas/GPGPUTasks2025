@@ -59,7 +59,8 @@ jobs:
         ./main_aplusb 0
         ./main_aplusb 1
 
-    - name: Run main_aplusb_matrix
+    - name: Run main_sum
       working-directory: ${{github.workspace}}/build
       run: |
-        ./main_aplusb_matrix 0
+        ./main_sum 0
+        ./main_sum 1

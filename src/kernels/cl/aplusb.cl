@@ -9,7 +9,7 @@ __attribute__((reqd_work_group_size(GROUP_SIZE, 1, 1)))
 __kernel void aplusb(__global const uint* a,
                      __global const uint* b,
                      __global       uint* c,
-                     unsigned int n)
+                            unsigned int  n)
 {
     const unsigned int index = get_global_id(0);
 
