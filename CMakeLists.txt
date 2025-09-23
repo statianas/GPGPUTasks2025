@@ -46,6 +46,7 @@ set(SOURCES
 set(LIBRARIES
         libclew
         libgpu
+        libimages
         libutils
         libjson
 )
@@ -58,6 +59,7 @@ set(LIBRARIES
 # Обратите внимание что это происходит на этапе компиляции, кроме того эта команда делает так чтобы файл src/kernels/vk/aplusb.h был перечислен среди HEADERS для компиляции при вызове add_executable
 set(OPENCL_SOURCES
         src/kernels/cl/aplusb.cl
+        src/kernels/cl/mandelbrot.cl
         src/kernels/cl/sum_01_atomics.cl
         src/kernels/cl/sum_02_atomics_load_k.cl
         src/kernels/cl/sum_03_local_memory_atomic_per_workgroup.cl
@@ -78,6 +80,7 @@ endforeach()
 # Обратите внимание что это происходит на этапе компиляции, кроме того эта команда делает так чтобы файл src/kernels/vk/aplusb_comp.h был перечислен среди HEADERS для компиляции при вызове add_executable
 set(VULKAN_SOURCES
         src/kernels/vk/aplusb.comp
+        src/kernels/vk/mandelbrot.comp
         src/kernels/vk/sum_01_atomics.comp
         src/kernels/vk/sum_02_atomics_load_k.comp
         src/kernels/vk/sum_03_local_memory_atomic_per_workgroup.comp
@@ -97,6 +100,7 @@ if (GPU_CUDA_SUPPORT)
     # 2) второй раз специальным CUDA-компилятором NVCC - для DEVICE-side кода, например функции помеченные специальным модификатором __global__ (кернелы) или __device__ (функции которые можно вызвать на видеокарте, т.е. из кернелов)
     set(CUDA_SOURCES
             src/kernels/cu/aplusb.cu
+            src/kernels/cu/mandelbrot.cu
             src/kernels/cu/sum_01_atomics.cu
             src/kernels/cu/sum_02_atomics_load_k.cu
             src/kernels/cu/sum_03_local_memory_atomic_per_workgroup.cu
@@ -111,13 +115,16 @@ else ()
     target_link_libraries(${PROJECT_NAME}_core ${LIBRARIES})
 endif ()
 
-add_executable(main_aplusb src/main_aplusb.cpp)
-add_executable(main_sum src/main_sum.cpp)
+add_executable(main_aplusb     src/main_aplusb.cpp)
+add_executable(main_mandelbrot src/main_mandelbrot.cpp)
+add_executable(main_sum        src/main_sum.cpp)
 
-target_link_libraries(main_aplusb ${PROJECT_NAME}_core)
-target_link_libraries(main_sum ${PROJECT_NAME}_core)
+target_link_libraries(main_aplusb     ${PROJECT_NAME}_core)
+target_link_libraries(main_mandelbrot ${PROJECT_NAME}_core)
+target_link_libraries(main_sum        ${PROJECT_NAME}_core)
 
 if (GPU_CUDA_SUPPORT)
-    target_include_directories(main_aplusb PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
-    target_include_directories(main_sum PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+    target_include_directories(main_aplusb     PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+    target_include_directories(main_mandelbrot PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+    target_include_directories(main_sum        PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
 endif ()
