@@ -1,9 +1,11 @@
+#pragma once
+
 #include "../../defines.h"
 
+#ifdef __CUDA_ARCH__
+// device-side code
+
 #if RASSERT_ENABLED
-    #ifdef rassert
-        #undef rassert
-    #endif
     #define rassert(condition, error_code)					                    \
             do {									            \
                     if (!(condition)) {						                    \
@@ -13,3 +15,5 @@
 #else
     #define rassert(condition, error_code) // do nothing
 #endif
+
+#endif // __CUDA_ARCH__
