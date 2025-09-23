@@ -23,7 +23,7 @@ unsigned int cpu::sum(const unsigned int* values, unsigned int n)
 unsigned int cpu::sumOpenMP(const unsigned int* values, unsigned int n)
 {
     unsigned int sum = 0;
-#pragma omp parallel for schedule(dynamic, 1024) reduction(+ : sum)
+    #pragma omp parallel for schedule(dynamic, 1024) reduction(+ : sum)
     for (ptrdiff_t i = 0; i < n; ++i) {
         sum += values[i];
     }
@@ -37,11 +37,7 @@ void run(int argc, char** argv)
     // TODO 000 сделайте здесь свой выбор API - если он отличается от OpenCL то в этой строке нужно заменить TypeOpenCL на TypeCUDA или TypeVulkan
     // TODO 000 после этого изучите этот код, запустите его, изучите соответсвующий вашему выбору кернел - src/kernels/<ваш выбор>/aplusb.<ваш выбор>
     // TODO 000 P.S. если вы выбрали CUDA - не забудьте установить CUDA SDK и добавить -DCUDA_SUPPORT=ON в CMake options
-    gpu::Context context;
-    if (device.supports_cuda)        context = activateContext(device, gpu::Context::TypeCUDA);
-    else if (device.supports_opencl) context = activateContext(device, gpu::Context::TypeOpenCL);
-    else if (device.supports_vulkan) context = activateContext(device, gpu::Context::TypeVulkan);
-    else rassert(false, 34523413241233);
+    gpu::Context context = activateContext(device, gpu::Context::TypeOpenCL);
     // OpenCL - рекомендуется как вариант по умолчанию, можно выполнять на CPU, есть printf, есть аналог valgrind/cuda-memcheck - https://github.com/jrprice/Oclgrind
     // CUDA   - рекомендуется если у вас NVIDIA видеокарта, есть printf, т.к. в таком случае вы сможете пользоваться профилировщиком (nsight-compute) и санитайзером (compute-sanitizer, это бывший cuda-memcheck)
     // Vulkan - не рекомендуется, т.к. писать код (compute shaders) на шейдерном языке GLSL на мой взгляд менее приятно чем в случае OpenCL/CUDA
@@ -117,28 +113,11 @@ void run(int argc, char** argv)
                         ocl_sum02AtomicsLoadK.exec(gpu::WorkSize(GROUP_SIZE, n / LOAD_K_VALUES_PER_ITEM), input_gpu, sum_accum_gpu, n);
                         sum_accum_gpu.readN(&gpu_sum, 1);
                     } else if (algorithm == "03 local memory and atomicAdd from master thread") {
-                        sum_accum_gpu.fill(0);
-                        ocl_sum03LocalMemoryAtomicPerWorkgroup.exec(gpu::WorkSize(GROUP_SIZE, n / LOAD_K_VALUES_PER_ITEM), input_gpu, sum_accum_gpu, n);
-                        sum_accum_gpu.readN(&gpu_sum, 1);
+                        // TODO ocl_sum03LocalMemoryAtomicPerWorkgroup.exec(...);
+                        throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
                     } else if (algorithm == "04 local reduction") {
-                        unsigned int reduced_size = n;
-                        gpu::gpu_mem_32u* from_gpu = nullptr;
-                        gpu::gpu_mem_32u* to_gpu = nullptr;
-                        while (reduced_size > 1) {
-                            if (reduced_size == n) {
-                                from_gpu = &input_gpu;
-                                to_gpu = &reduction_buffer2_gpu;
-                            } else {
-                                from_gpu = &reduction_buffer1_gpu;
-                                to_gpu = &reduction_buffer2_gpu;
-                            }
-                            ocl_sum04LocalReduction.exec(gpu::WorkSize(GROUP_SIZE, reduced_size), *from_gpu, *to_gpu, reduced_size);
-                            reduced_size = div_ceil((int)reduced_size, GROUP_SIZE);
-                            if (reduced_size == 1) {
-                                to_gpu->readN(&gpu_sum, 1);
-                            }
-                            std::swap(reduction_buffer1_gpu, reduction_buffer2_gpu);
-                        }
+                        // TODO ocl_sum04LocalReduction.exec(...);
+                        throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
                     } else {
                         rassert(false, 652345234321, algorithm, algorithm_index);
                     }
@@ -153,28 +132,11 @@ void run(int argc, char** argv)
                         cuda::sum_02_atomics_load_k(gpu::WorkSize(GROUP_SIZE, n / LOAD_K_VALUES_PER_ITEM), input_gpu, sum_accum_gpu, n);
                         sum_accum_gpu.readN(&gpu_sum, 1);
                     } else if (algorithm == "03 local memory and atomicAdd from master thread") {
-                        sum_accum_gpu.fill(0);
-                        cuda::sum_03_local_memory_atomic_per_workgroup(gpu::WorkSize(GROUP_SIZE, n / LOAD_K_VALUES_PER_ITEM), input_gpu, sum_accum_gpu, n);
-                        sum_accum_gpu.readN(&gpu_sum, 1);
+                        // TODO cuda::sum_03_local_memory_atomic_per_workgroup(...);
+                        throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
                     } else if (algorithm == "04 local reduction") {
-                        unsigned int reduced_size = n;
-                        gpu::gpu_mem_32u* from_gpu = nullptr;
-                        gpu::gpu_mem_32u* to_gpu = nullptr;
-                        while (reduced_size > 1) {
-                            if (reduced_size == n) {
-                                from_gpu = &input_gpu;
-                                to_gpu = &reduction_buffer2_gpu;
-                            } else {
-                                from_gpu = &reduction_buffer1_gpu;
-                                to_gpu = &reduction_buffer2_gpu;
-                            }
-                            cuda::sum_04_local_reduction(gpu::WorkSize(GROUP_SIZE, reduced_size), *from_gpu, *to_gpu, reduced_size);
-                            reduced_size = div_ceil((int)reduced_size, GROUP_SIZE);
-                            if (reduced_size == 1) {
-                                to_gpu->readN(&gpu_sum, 1);
-                            }
-                            std::swap(reduction_buffer1_gpu, reduction_buffer2_gpu);
-                        }
+                        // TODO cuda::sum_04_local_reduction(...);
+                        throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
                     } else {
                         rassert(false, 652345234321, algorithm, algorithm_index);
                     }
@@ -189,28 +151,11 @@ void run(int argc, char** argv)
                         vk_sum02AtomicsLoadK.exec(n, gpu::WorkSize(GROUP_SIZE, n / LOAD_K_VALUES_PER_ITEM), input_gpu, sum_accum_gpu);
                         sum_accum_gpu.readN(&gpu_sum, 1);
                     } else if (algorithm == "03 local memory and atomicAdd from master thread") {
-                        sum_accum_gpu.fill(0);
-                        vk_sum03LocalMemoryAtomicPerWorkgroup.exec(n, gpu::WorkSize(GROUP_SIZE, n / LOAD_K_VALUES_PER_ITEM), input_gpu, sum_accum_gpu);
-                        sum_accum_gpu.readN(&gpu_sum, 1);
+                        // TODO vk_sum03LocalMemoryAtomicPerWorkgroup.exec(...);
+                        throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
                     } else if (algorithm == "04 local reduction") {
-                        unsigned int reduced_size = n;
-                        gpu::gpu_mem_32u* from_gpu = nullptr;
-                        gpu::gpu_mem_32u* to_gpu = nullptr;
-                        while (reduced_size > 1) {
-                            if (reduced_size == n) {
-                                from_gpu = &input_gpu;
-                                to_gpu = &reduction_buffer2_gpu;
-                            } else {
-                                from_gpu = &reduction_buffer1_gpu;
-                                to_gpu = &reduction_buffer2_gpu;
-                            }
-                            vk_sum04LocalReduction.exec(reduced_size, gpu::WorkSize(GROUP_SIZE, reduced_size), *from_gpu, *to_gpu);
-                            reduced_size = div_ceil((int)reduced_size, GROUP_SIZE);
-                            if (reduced_size == 1) {
-                                to_gpu->readN(&gpu_sum, 1);
-                            }
-                            std::swap(reduction_buffer1_gpu, reduction_buffer2_gpu);
-                        }
+                        // TODO vk_sum04LocalReduction.exec(...);
+                        throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
                     } else {
                         rassert(false, 652345234321, algorithm, algorithm_index);
                     }

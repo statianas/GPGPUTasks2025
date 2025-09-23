@@ -58,11 +58,7 @@ void run(int argc, char** argv)
     // TODO 000 сделайте здесь свой выбор API - если он отличается от OpenCL то в этой строке нужно заменить TypeOpenCL на TypeCUDA или TypeVulkan
     // TODO 000 после этого изучите этот код, запустите его, изучите соответсвующий вашему выбору кернел - src/kernels/<ваш выбор>/aplusb.<ваш выбор>
     // TODO 000 P.S. если вы выбрали CUDA - не забудьте установить CUDA SDK и добавить -DCUDA_SUPPORT=ON в CMake options
-    gpu::Context context;
-    if (device.supports_cuda)        context = activateContext(device, gpu::Context::TypeCUDA);
-    else if (device.supports_opencl) context = activateContext(device, gpu::Context::TypeOpenCL);
-    else if (device.supports_vulkan) context = activateContext(device, gpu::Context::TypeVulkan);
-    else rassert(false, 34523413241233);
+    gpu::Context context = activateContext(device, gpu::Context::TypeOpenCL);
     // OpenCL - рекомендуется как вариант по умолчанию, можно выполнять на CPU, есть printf, есть аналог valgrind/cuda-memcheck - https://github.com/jrprice/Oclgrind
     // CUDA   - рекомендуется если у вас NVIDIA видеокарта, есть printf, т.к. в таком случае вы сможете пользоваться профилировщиком (nsight-compute) и санитайзером (compute-sanitizer, это бывший cuda-memcheck)
     // Vulkan - не рекомендуется, т.к. писать код (compute shaders) на шейдерном языке GLSL на мой взгляд менее приятно чем в случае OpenCL/CUDA
@@ -125,13 +121,13 @@ void run(int argc, char** argv)
             } else if (algorithm == "GPU") {
                 // _______________________________OpenCL_____________________________________________
                 if (context.type() == gpu::Context::TypeOpenCL) {
-                    ocl_mandelbrot.exec(gpu::WorkSize(GROUP_SIZE_X, GROUP_SIZE_Y, width, height),
-                        gpu_results, width, height, centralX - sizeX / 2.0f, centralY - sizeY / 2.0f, sizeX, sizeY, iterationsLimit, isSmoothing);
+                    // TODO ocl_mandelbrot.exec(...);
+                    throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
 
                     // _______________________________CUDA___________________________________________
                 } else if (context.type() == gpu::Context::TypeCUDA) {
-                    cuda::mandelbrot(gpu::WorkSize(GROUP_SIZE_X, GROUP_SIZE_Y, width, height),
-                        gpu_results, width, height, centralX - sizeX / 2.0f, centralY - sizeY / 2.0f, sizeX, sizeY, iterationsLimit, isSmoothing);
+                    // TODO cuda::mandelbrot(..);
+                    throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
 
                     // _______________________________Vulkan_________________________________________
                 } else if (context.type() == gpu::Context::TypeVulkan) {
@@ -142,7 +138,8 @@ void run(int argc, char** argv)
                        float sizeX; float sizeY;
                         uint iters; uint isSmoothing;
                     } params = { width, height, centralX - sizeX / 2.0f, centralY - sizeY / 2.0f, sizeX, sizeY, iterationsLimit, isSmoothing };
-                    vk_mandelbrot.exec(params, gpu::WorkSize(GROUP_SIZE_X, GROUP_SIZE_Y, width, height), gpu_results);
+                    // TODO vk_mandelbrot.exec(params, ...);
+                    throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
                 } else {
                     rassert(false, 546345243, context.type());
                 }
