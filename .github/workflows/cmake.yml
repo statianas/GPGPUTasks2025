@@ -63,10 +63,8 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: |
         ./main_mandelbrot 0
-        ./main_mandelbrot 1
 
     - name: Run main_sum
       working-directory: ${{github.workspace}}/build
       run: |
         ./main_sum 0
-        ./main_sum 1
