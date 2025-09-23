@@ -164,9 +164,9 @@ void run(int argc, char** argv)
 
         // Сохраняем картинку
         image8u image = renderToColor(cpu_results.ptr(), width, height);
-        std::string filename = "mandelbrot " + algorithm + ".png";
+        std::string filename = "mandelbrot " + algorithm + ".bmp";
         std::cout << "saving image to '" << filename << "'..." << std::endl;
-        image.savePNG(filename);
+        image.saveBMP(filename);
 
         // Сверяем результат
         if (!cpu_results.isNull()) {
