@@ -2,9 +2,6 @@
 
 #include "../../defines.h"
 
-#ifdef __CUDA_ARCH__
-// device-side code
-
 #if RASSERT_ENABLED
     #define rassert(condition, error_code)					                    \
             do {									            \
@@ -15,5 +12,3 @@
 #else
     #define rassert(condition, error_code) // do nothing
 #endif
-
-#endif // __CUDA_ARCH__
