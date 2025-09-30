@@ -5,7 +5,7 @@
 #include "../defines.h"
 
 __attribute__((reqd_work_group_size(1, 1, 1)))
-__kernel void matrix_transpose_naive(
+__kernel void matrix_01_transpose_naive(
                        __global const float* matrix,            // w x h
                        __global       float* transposed_matrix, // h x w
                                 unsigned int w,
