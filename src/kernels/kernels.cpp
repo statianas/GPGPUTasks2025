@@ -62,20 +62,20 @@ const ocl::ProgramBinaries& getAplusB()
 
 const ProgramBinaries& getMatrix01TransposeNaive()
 {
-    return opencl_binaries_aplusb;
+    return opencl_binaries_matrix_01_transpose_naive;
 }
 const ProgramBinaries& getMatrix02TransposeCoalescedViaLocalMemory()
 {
-    return opencl_binaries_aplusb;
+    return opencl_binaries_matrix_02_transpose_coalesced_via_local_memory;
 }
 
 const ProgramBinaries& getMatrix03MultiplyNaive()
 {
-    return opencl_binaries_aplusb;
+    return opencl_binaries_matrix_03_multiply_naive;
 }
 const ProgramBinaries& getMatrix04MultiplyViaLocalMemory()
 {
-    return opencl_binaries_aplusb;
+    return opencl_binaries_matrix_04_multiply_via_local_memory;
 }
 } // namespace ocl
 
@@ -87,23 +87,23 @@ const ProgramBinaries& getAplusB()
 
 const ProgramBinaries& getMatrix01TransposeNaive()
 {
-    return vulkan_binaries_aplusb_comp;
+    return vulkan_binaries_matrix_01_transpose_naive_comp;
 }
 const ProgramBinaries& getMatrix02TransposeCoalescedViaLocalMemory()
 {
-    return vulkan_binaries_aplusb_comp;
+    return vulkan_binaries_matrix_02_transpose_coalesced_via_local_memory_comp;
 }
 
 const ProgramBinaries& getMatrix03MultiplyNaive()
 {
-    return vulkan_binaries_aplusb_comp;
+    return vulkan_binaries_matrix_03_multiply_naive_comp;
 }
 const ProgramBinaries& getMatrix04MultiplyViaLocalMemory()
 {
-    return vulkan_binaries_aplusb_comp;
+    return vulkan_binaries_matrix_04_multiply_via_local_memory_comp;
 }
 const ProgramBinaries& getMatrix05MultiplyCooperativeMatrix()
 {
-    return vulkan_binaries_aplusb_comp;
+    return vulkan_binaries_matrix_05_multiply_cooperative_matrix_comp;
 }
 } // namespace avk2
