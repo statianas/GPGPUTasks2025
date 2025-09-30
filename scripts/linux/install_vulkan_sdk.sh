@@ -32,7 +32,7 @@ wget https://github.com/KhronosGroup/Vulkan-Loader/archive/refs/tags/v${vulkan_l
 wget https://raw.githubusercontent.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/19b940e864bd3a5afb3c79e3c6788869d01a19eb/include/vk_mem_alloc.h -O vk_mem_alloc.h
 wget https://github.com/KhronosGroup/Vulkan-ValidationLayers/archive/refs/tags/v${vulkan_validation_layers_version}.zip -O Vulkan-ValidationLayers-${vulkan_validation_layers_version}.zip
 wget https://github.com/KhronosGroup/SPIRV-Reflect/archive/refs/tags/vulkan-sdk-${vulkan_spirv_reflect_version}.0.zip -O SPIRV-Reflect-${vulkan_spirv_reflect_version}.zip
-wget https://github.com/google/shaderc/archive/v2020.2.zip
+wget https://github.com/google/shaderc/archive/v2025.4.zip
 
 echo "Installing googletest"
 unzip release-${googletest_version}.zip
@@ -71,17 +71,17 @@ mkdir ${install_prefix}/include/vma
 mv vk_mem_alloc.h ${install_prefix}/include/vma/vk_mem_alloc.h
 
 echo "Installing glslc shaders compiler"
-unzip v2020.2.zip
-cd shaderc-2020.2/third_party
-wget https://github.com/KhronosGroup/SPIRV-Headers/archive/1.5.3.reservations1.zip
-unzip 1.5.3.reservations1.zip
-mv SPIRV-Headers-1.5.3.reservations1 spirv-headers
-wget https://github.com/KhronosGroup/SPIRV-Tools/archive/v2020.4.zip
-unzip v2020.4.zip
-mv SPIRV-Tools-2020.4/ spirv-tools
-wget https://github.com/KhronosGroup/glslang/archive/SDK-candidate-26-Jul-2020.zip
-unzip SDK-candidate-26-Jul-2020.zip
-mv glslang-SDK-candidate-26-Jul-2020 glslang
+unzip v2025.4.zip
+cd shaderc-2025.4/third_party
+wget https://github.com/KhronosGroup/SPIRV-Headers/archive/vulkan-sdk-1.4.321.0.zip
+unzip SPIRV-Headers-vulkan-sdk-1.4.321.0.zip
+mv SPIRV-Headers-vulkan-sdk-1.4.321.0 spirv-headers
+wget https://github.com/KhronosGroup/SPIRV-Tools/archive/vulkan-sdk-1.4.321.0.zip
+unzip SPIRV-Tools-vulkan-sdk-1.4.321.0.zip
+mv SPIRV-Tools-vulkan-sdk-1.4.321.0/ spirv-tools
+wget https://github.com/KhronosGroup/glslang/archive/16.0.0.zip
+unzip 16.0.0.zip
+mv glslang-16.0.0 glslang
 cd ..
 mkdir build
 cd build
@@ -89,8 +89,11 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DSHADERC_SKIP_TESTS=TRUE
 make -j${njobs}
 cp glslc/glslc /usr/bin/
 cd ../..
-rm v2020.2.zip
-rm -rf shaderc-2020.2
+rm shaderc-2025.4
+rm -rf v2025.4
+
+/usr/bin/glslc --version
+glslc --version
 
 if [ "$SKIP_VALIDATION_LAYERS" -eq 0 ]; then
   echo "Installing Vulkan Validation Layers"
