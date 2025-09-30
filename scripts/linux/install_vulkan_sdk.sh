@@ -77,7 +77,7 @@ wget https://github.com/KhronosGroup/SPIRV-Headers/archive/vulkan-sdk-1.4.321.0.
 unzip vulkan-sdk-1.4.321.0.zip
 mv SPIRV-Headers-vulkan-sdk-1.4.321.0 spirv-headers
 wget https://github.com/KhronosGroup/SPIRV-Tools/archive/vulkan-sdk-1.4.321.0.zip
-unzip vulkan-sdk-1.4.321.0.zip
+unzip vulkan-sdk-1.4.321.0.zip.1
 mv SPIRV-Tools-vulkan-sdk-1.4.321.0 spirv-tools
 wget https://github.com/KhronosGroup/glslang/archive/16.0.0.zip
 unzip 16.0.0.zip
@@ -89,11 +89,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DSHADERC_SKIP_TESTS=TRUE
 make -j${njobs}
 cp glslc/glslc /usr/bin/
 cd ../..
-rm shaderc-2025.4
-rm -rf v2025.4
-
-/usr/bin/glslc --version
-glslc --version
+rm -rf shaderc-2025.4
 
 if [ "$SKIP_VALIDATION_LAYERS" -eq 0 ]; then
   echo "Installing Vulkan Validation Layers"
