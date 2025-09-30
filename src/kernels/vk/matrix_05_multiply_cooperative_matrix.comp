@@ -5,9 +5,15 @@
 #include "../defines.h"
 
 #extension GL_KHR_memory_scope_semantics : require
-#extension GL_KHR_cooperative_matrix : require
 #extension GL_EXT_subgroup_uniform_control_flow : enable
 #extension GL_EXT_shader_explicit_arithmetic_types_float16 : require
+// #extension GL_KHR_cooperative_matrix : require // TODO uncomment me
+// Чтобы это компилировалось вам нужен достаточно свежий GLSL компилятор
+// Например если вы получили ошибку "error: '#extension' : extension not supported: GL_KHR_cooperative_matrix"
+// то вам потребуется его обновить, например для Linux:
+// 1) wget https://github.com/google/shaderc/archive/v2025.4.zip
+// 2) https://github.com/GPGPUCourse/GPGPUTasks2025/blob/05138f80f50c647845da6bc7c59878ac05576c06/scripts/linux/install_vulkan_sdk.sh#L73-L92
+// Если потребуется - то явно указать путь к компилятору можно через CMake options: -DGLSLC_BIN=.../glslc.exe
 
 layout (std430, binding = 0) readonly buffer MatrixAIn   { float a[]; }; // rows=h x cols=k
 layout (std430, binding = 1) readonly buffer MatrixBIn   { float b[]; }; // rows=k x cols=w
