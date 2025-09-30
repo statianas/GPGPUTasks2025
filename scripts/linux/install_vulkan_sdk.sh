@@ -78,7 +78,7 @@ unzip vulkan-sdk-1.4.321.0.zip
 mv SPIRV-Headers-vulkan-sdk-1.4.321.0 spirv-headers
 wget https://github.com/KhronosGroup/SPIRV-Tools/archive/vulkan-sdk-1.4.321.0.zip
 unzip vulkan-sdk-1.4.321.0.zip
-mv SPIRV-Tools-vulkan-sdk-1.4.321.0/ spirv-tools
+mv SPIRV-Tools-vulkan-sdk-1.4.321.0 spirv-tools
 wget https://github.com/KhronosGroup/glslang/archive/16.0.0.zip
 unzip 16.0.0.zip
 mv glslang-16.0.0 glslang
