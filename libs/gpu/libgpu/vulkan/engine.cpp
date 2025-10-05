@@ -387,11 +387,22 @@ public:
 
                 vk::PhysicalDeviceCooperativeMatrixFeaturesKHR cooperative_matrix_features;
                 if (device_info_.supportsExtension(VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME)) {
-                    device_enabled_extensions.push_back(VK_EXT_SHADER_ATOMIC_FLOAT_EXTENSION_NAME);
+                    device_enabled_extensions.push_back(VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME);
+
                     cooperative_matrix_features.setCooperativeMatrix(true);
                     cooperative_matrix_features.setCooperativeMatrixRobustBufferAccess(false); // it is not supported on NVIDIA RTX 4090
                     cooperative_matrix_features.setPNext(pNextFeature);
                     pNextFeature = &cooperative_matrix_features;
+                }
+
+                vk::PhysicalDeviceSubgroupSizeControlFeatures subgroup_size_control_features;
+                if (device_info_.supportsExtension(VK_EXT_SUBGROUP_SIZE_CONTROL_EXTENSION_NAME)) {
+                    device_enabled_extensions.push_back(VK_EXT_SUBGROUP_SIZE_CONTROL_EXTENSION_NAME);
+
+                    subgroup_size_control_features.setComputeFullSubgroups(true);
+                    subgroup_size_control_features.setSubgroupSizeControl(true);
+                    subgroup_size_control_features.setPNext(pNextFeature);
+                    pNextFeature = &subgroup_size_control_features;
                 }
 
 		vk::DeviceCreateInfo device_create_info({}, queue_create_info, {}, device_enabled_extensions, nullptr, pNextFeature);
