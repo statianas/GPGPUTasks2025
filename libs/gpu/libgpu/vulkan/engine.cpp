@@ -1157,10 +1157,12 @@ avk2::VulkanKernel *avk2::KernelSource::compileComputeKernel(const std::shared_p
 	vk::PipelineShaderStageCreateInfo pipeline_stages_create_info({}, vk::ShaderStageFlagBits::eCompute, shader_module, name_.c_str());
 
         vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo require_subgroup;
-        require_subgroup.requiredSubgroupSize = VK_SUBGROUP_SIZE;
-        if (vk->device().supportsExtension(VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME)) {
-            pipeline_stages_create_info.flags |= vk::PipelineShaderStageCreateFlagBits::eRequireFullSubgroups;
-            pipeline_stages_create_info.setPNext(&require_subgroup);
+        if (shader_module_info.getGroupSize(name_)[0] % VK_SUBGROUP_SIZE == 0) {
+            require_subgroup.requiredSubgroupSize = VK_SUBGROUP_SIZE;
+            if (vk->device().supportsExtension(VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME)) {
+                pipeline_stages_create_info.flags |= vk::PipelineShaderStageCreateFlagBits::eRequireFullSubgroups;
+                pipeline_stages_create_info.setPNext(&require_subgroup);
+            }
         }
 
 	std::set<unsigned int> descriptors_sets = shader_module_info.getDescriptorsSets();
