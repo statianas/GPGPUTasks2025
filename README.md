@@ -2,7 +2,7 @@
 
 [Остальные задания](https://github.com/GPGPUCourse/GPGPUTasks2025/).
 
-# Задание 5. Radix sort (сортировка подсчетом)
+# Задание 5. Radix sort (поразрядная сортировка)
 
 [![Build Status](https://github.com/GPGPUCourse/GPGPUTasks2025/actions/workflows/cmake.yml/badge.svg?branch=task05&event=push)](https://github.com/GPGPUCourse/GPGPUTasks2025/actions/workflows/cmake.yml)
 
