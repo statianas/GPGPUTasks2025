@@ -1,9 +1,9 @@
-#include <libbase/stats.h>
-#include <libutils/misc.h>
+#include "libbase/stats.h"
+#include "libutils/misc.h"
 
-#include <libbase/timer.h>
-#include <libgpu/vulkan/engine.h>
-#include <libgpu/vulkan/tests/test_utils.h>
+#include "libbase/timer.h"
+#include "libgpu/vulkan/engine.h"
+#include "libgpu/vulkan/tests/test_utils.h"
 
 #include "kernels/defines.h"
 #include "kernels/kernels.h"
@@ -41,7 +41,7 @@ void run(int argc, char** argv)
     avk2::KernelSource vk_sum_reduction(avk2::getPrefixSum01Reduction());
     avk2::KernelSource vk_prefix_accumulation(avk2::getPrefixSum02PrefixAccumulation());
 
-    unsigned int n = 100*1000*1000;
+    int n = 100*1000*1000;
     std::vector<unsigned int> as(n, 0);
     size_t total_sum = 0;
     for (size_t i = 0; i < n; ++i) {
@@ -51,7 +51,7 @@ void run(int argc, char** argv)
     }
 
     // Аллоцируем буферы в VRAM
-    gpu::gpu_mem_32u input_gpu(n), buffer1_pow2_sum_gpu(n), buffer2_pow2_sum_gpu(n), prefix_sum_accum_gpu(n);
+    gpu::gpu_mem_32u input_gpu(n), buffer1_pow2_sum_gpu(n), buffer2_pow2_sum_gpu(n), prefix_sum_accum_gpu(3 * n);
 
     // Прогружаем входные данные по PCI-E шине: CPU RAM -> GPU VRAM
     input_gpu.writeN(as.data(), n);
@@ -64,16 +64,21 @@ void run(int argc, char** argv)
         // Запускаем кернел, с указанием размера рабочего пространства и передачей всех аргументов
         // Если хотите - можете удалить ветвление здесь и оставить только тот код который соответствует вашему выбору API
         if (context.type() == gpu::Context::TypeOpenCL) {
+            ocl_fill_with_zeros.exec(gpu::WorkSize(GROUP_SIZE, 3 * n), prefix_sum_accum_gpu, 3 * n);
+
             input_gpu.copyToN(prefix_sum_accum_gpu, n);
 
-            unsigned int stride;
+            int stride;
+            int offset = 0;
 
             for (stride = 1; (1 << (stride - 1)) < n; ++stride) {
-                ocl_sum_reduction.exec(gpu::WorkSize(GROUP_SIZE, (n + (1 << stride) - 2)/(1 << stride) + 1), prefix_sum_accum_gpu, n, stride);
+                ocl_sum_reduction.exec(gpu::WorkSize(GROUP_SIZE, (n + (1 << stride) - 1)/(1 << stride)), prefix_sum_accum_gpu, n, stride, offset);
+                offset += (n + (1 << (stride - 1)) - 1)/(1 << (stride - 1));
             }
-            stride -= 2;
+            stride -= 1;
             for (;stride > 0; --stride) {
-                ocl_prefix_accumulation.exec(gpu::WorkSize(GROUP_SIZE, (n + (1 << stride) - 2)/(1 << stride) + 1), prefix_sum_accum_gpu, n, stride);
+                offset -= (n + (1 << (stride - 1)) - 1) / (1 << (stride - 1));
+                ocl_prefix_accumulation.exec(gpu::WorkSize(GROUP_SIZE, (n + (1 << stride) - 1) / (1 << stride)), prefix_sum_accum_gpu, n, stride, offset);
             }
 
         } else if (context.type() == gpu::Context::TypeCUDA) {
@@ -108,6 +113,8 @@ void run(int argc, char** argv)
     size_t cpu_sum = 0;
     for (size_t i = 0; i < n; ++i) {
         cpu_sum += as[i];
+//        std::cout << as[i] << ' ' << i << '\n';
+//        std::cout << cpu_sum << ' ' << gpu_prefix_sum[i] << ' ' << i << '\n';
         rassert(cpu_sum == gpu_prefix_sum[i], 566324523452323, cpu_sum, gpu_prefix_sum[i], i);
     }
 
