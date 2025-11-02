@@ -14,7 +14,7 @@
 #include "vk/generated_kernels/radix_sort_02_global_prefixes_scan_sum_reduction_comp.h"
 #include "vk/generated_kernels/radix_sort_03_global_prefixes_scan_accumulation_comp.h"
 #include "vk/generated_kernels/radix_sort_04_scatter_comp.h"
-#include "vk/generated_kernels/matrix_02_transpose_coalesced_via_local_memory_comp.h"
+//#include "vk/generated_kernels/matrix_02_transpose_coalesced_via_local_memory_comp.h"
 
 #ifndef CUDA_SUPPORT
 namespace cuda {

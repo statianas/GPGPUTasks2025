@@ -63,7 +63,10 @@ set(OPENCL_SOURCES
         src/kernels/cl/radix_sort_01_local_counting.cl
         src/kernels/cl/radix_sort_02_global_prefixes_scan_sum_reduction.cl
         src/kernels/cl/radix_sort_03_global_prefixes_scan_accumulation.cl
-        src/kernels/cl/radix_sort_04_scatter.cl)
+        src/kernels/cl/radix_sort_04_scatter.cl
+        src/kernels/cl/matrix_02_transpose_coalesced_via_local_memory.cl
+
+)
 
 set(OPENCL_INCLUDES src/kernels/defines.h src/kernels/cl/helpers/rassert.cl)
 set(OPENCL_DEFINES)
