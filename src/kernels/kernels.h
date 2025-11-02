@@ -10,6 +10,8 @@ void radix_sort_02_global_prefixes_scan_sum_reduction(const gpu::WorkSize &workS
 void radix_sort_03_global_prefixes_scan_accumulation(const gpu::WorkSize &workSize, const gpu::gpu_mem_32u &buffer1, gpu::gpu_mem_32u &buffer2, unsigned int a1, unsigned int a2);
 void radix_sort_04_scatter(const gpu::WorkSize &workSize, const gpu::gpu_mem_32u &values, const gpu::gpu_mem_32u &buffer1, gpu::gpu_mem_32u &buffer2, unsigned int a1, unsigned int a2);
 }
+void matrix_transpose_coalesced_via_local_memory(const gpu::WorkSize &workSize,
+    const gpu::gpu_mem_32f &matrix, gpu::gpu_mem_32f &transposed_matrix, unsigned int w, unsigned int h);
 
 namespace ocl {
 const ProgramBinaries& getAplusB();
@@ -19,6 +21,8 @@ const ProgramBinaries& getRadixSort01LocalCounting();
 const ProgramBinaries& getRadixSort02GlobalPrefixesScanSumReduction();
 const ProgramBinaries& getRadixSort03GlobalPrefixesScanAccumulation();
 const ProgramBinaries& getRadixSort04Scatter();
+const ProgramBinaries& getMatrix02TransposeCoalescedViaLocalMemory();
+
 }
 
 namespace avk2 {

@@ -6,6 +6,7 @@
 #include "cl/generated_kernels/radix_sort_02_global_prefixes_scan_sum_reduction.h"
 #include "cl/generated_kernels/radix_sort_03_global_prefixes_scan_accumulation.h"
 #include "cl/generated_kernels/radix_sort_04_scatter.h"
+#include "cl/generated_kernels/matrix_02_transpose_coalesced_via_local_memory.h"
 
 #include "vk/generated_kernels/aplusb_comp.h"
 #include "vk/generated_kernels/fill_buffer_with_zeros_comp.h"
@@ -13,6 +14,7 @@
 #include "vk/generated_kernels/radix_sort_02_global_prefixes_scan_sum_reduction_comp.h"
 #include "vk/generated_kernels/radix_sort_03_global_prefixes_scan_accumulation_comp.h"
 #include "vk/generated_kernels/radix_sort_04_scatter_comp.h"
+#include "vk/generated_kernels/matrix_02_transpose_coalesced_via_local_memory_comp.h"
 
 #ifndef CUDA_SUPPORT
 namespace cuda {
@@ -28,6 +30,13 @@ void fill_buffer_with_zeros(const gpu::WorkSize &workSize,
     // dummy implementation if CUDA_SUPPORT is disabled
     rassert(false, 54623523412413);
 }
+void matrix_transpose_coalesced_via_local_memory(const gpu::WorkSize &workSize,
+    const gpu::gpu_mem_32f &matrix, gpu::gpu_mem_32f &transposed_matrix, unsigned int w, unsigned int h)
+{
+    // dummy implementation if CUDA_SUPPORT is disabled
+    rassert(false, 546237686412414);
+}
+
 void radix_sort_01_local_counting(const gpu::WorkSize &workSize, const gpu::gpu_mem_32u &values, gpu::gpu_mem_32u &buffer1, unsigned int a1, unsigned int a2)
 {
     // dummy implementation if CUDA_SUPPORT is disabled
@@ -80,6 +89,10 @@ const ProgramBinaries& getRadixSort03GlobalPrefixesScanAccumulation()
 const ProgramBinaries& getRadixSort04Scatter()
 {
     return opencl_binaries_radix_sort_04_scatter;
+}
+const ProgramBinaries& getMatrix02TransposeCoalescedViaLocalMemory()
+{
+    return opencl_binaries_matrix_02_transpose_coalesced_via_local_memory;
 }
 } // namespace ocl
 
